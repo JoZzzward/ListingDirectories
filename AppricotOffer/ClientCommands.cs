@@ -17,7 +17,7 @@ namespace AppricotOffer
             if (q != "-q") q = "";
 
             if (!o.Contains("\\"))
-                o = "C:\\Users\\admin\\source\\repos\\AppricotOffer\\AppricotOffer\\sizes-YYYY-MM-DD.txt";
+                o = Directory.GetCurrentDirectory() + "\\sizes-YYYY-MM-DD.txt";
             try
             {
                 filesControls = new FilesControls(o);
@@ -25,7 +25,7 @@ namespace AppricotOffer
             }
             catch (Exception ex)
             {
-                filesControls = new FilesControls("C:\\Users\\admin\\source\\repos\\AppricotOffer\\AppricotOffer\\sizes-YYYY-MM-DD.txt");
+                filesControls = new FilesControls(Directory.GetCurrentDirectory() + "\\sizes-YYYY-MM-DD.txt");
             }
             filesControls.isHumanreadOn = h != "-h" ? false : true;
             this.q = q;
