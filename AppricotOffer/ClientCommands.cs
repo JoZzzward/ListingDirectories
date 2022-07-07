@@ -1,57 +1,58 @@
-﻿
-namespace AppricotOffer
+﻿namespace AppricotOffer
 {
     public class ClientCommands
     {
-        readonly string q, p, o, h;
-        string d = "-", prevDashes;
+        readonly string quite, path, output, humanread;
+        string _dashes = "-", prevDashes;
         string[] allPartsOfPath;
         readonly FilesControls filesControls;
         readonly FoldersControls foldersControls;
-        public ClientCommands(string q, string p, string o, string h)
+        public ClientCommands(string quite, string path, string output, string humanread)
         {
-            if (!p.Contains("\\"))
-                p = Directory.GetCurrentDirectory();
-            allPartsOfPath = p.Split('\\');
+            if (!path.Contains("\\"))
+                path = Directory.GetCurrentDirectory();
+            allPartsOfPath = path.Split('\\');
 
-            if (q != "-q") q = "";
+            if (quite != "-q") quite = "";
 
-            if (!o.Contains("\\"))
-                o = Directory.GetCurrentDirectory() + "\\sizes-YYYY-MM-DD.txt";
+            if (!output.Contains("\\"))
+                output = Directory.GetCurrentDirectory() + "\\sizes-YYYY-MM-DD.txt";
             try
             {
-                filesControls = new FilesControls(o);
+                filesControls = new FilesControls(output);
                 foldersControls = new FoldersControls();
             }
             catch (Exception ex)
             {
                 filesControls = new FilesControls(Directory.GetCurrentDirectory() + "\\sizes-YYYY-MM-DD.txt");
             }
-            filesControls.isHumanreadOn = h != "-h" ? false : true;
-            this.q = q;
-            this.p = p;
-            this.o = o;
-            this.h = h;
-            RecursionMethod(allPartsOfPath[0] + "\\" + allPartsOfPath[1], d);
+            filesControls.isHumanreadOn = humanread != "-h" ? false : true;
+            this.quite = quite;
+            this.path = path;
+            this.output = output;
+            this.humanread = humanread;
+            FileSearch(allPartsOfPath[0] + "\\" + allPartsOfPath[1], _dashes);
             filesControls.CloseSw();
         }
 
-        public void RecursionMethod(string currPath, string _d = "")
+        public void FileSearch(string currentPath, string _dashes = "")
         {
-            string dashes = _d;
+            string dashes = _dashes;
             try
             {
-                DirectoryInfo di = new DirectoryInfo(currPath);
+                DirectoryInfo di = new DirectoryInfo(currentPath);
                 if (di.GetDirectories().ToArray().Length != 0)
                 {
                     var allDirectories = di.GetDirectories();
                     foreach (var item in allDirectories)
                     {
+                        if (item.Name == "admin")
+                            continue;
+
                         prevDashes = dashes;
-                        if (q == "-q")
-                        {
-                            filesControls.FilesOutputToFile(item.FullName, dashes, prevDashes); 
-                        }
+
+                        if (quite == "-q")
+                            filesControls.FilesOutputToFile(item.FullName, dashes, prevDashes);
                         else
                         {
                             filesControls.FilesOutputLog(item.FullName, dashes, prevDashes);
@@ -63,8 +64,8 @@ namespace AppricotOffer
                             for (int i = 0; i < nextDir.Length; i++)
                             {
                                 if (nextDir[i] is null)
-                                    currPath = p;
-                                RecursionMethod(nextDir[i].FullName, dashes);
+                                    currentPath = path;
+                                FileSearch(nextDir[i].FullName, dashes);
                             }
                         }
                     }
@@ -72,10 +73,8 @@ namespace AppricotOffer
                 else
                 {
                     dashes += "-";
-                    if (q == "-q")
-                    {
+                    if (quite == "-q")
                         filesControls.FilesOutputToFile(di.FullName, dashes, prevDashes);
-                    }
                     else
                     {
                         filesControls.FilesOutputLog(di.FullName, dashes, prevDashes);
@@ -85,6 +84,7 @@ namespace AppricotOffer
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.Message);
             }
             return;
         }

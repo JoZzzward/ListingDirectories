@@ -6,11 +6,11 @@ namespace AppricotOffer
     {
         public long GetFolderSize(string currPath)
         {
-            var di = new DirectoryInfo(currPath);
-            var allFiles = di.GetFiles();
+            var currentPath = new DirectoryInfo(currPath);
+            var allFiles = currentPath.GetFiles();
             long folderSize = 0;
-            foreach (var obj in allFiles)
-                folderSize += obj.Length;
+            foreach (var item in allFiles)
+                folderSize += item.Length;
 
             return folderSize;
         }

@@ -70,9 +70,7 @@ namespace AppricotOffer
                     return $"({bytes:0.00} килобайт)";
                 }
                 else
-                {
                     return $"({num:0.00} байт)";
-                }
             }
             else return string.Empty;
         }
